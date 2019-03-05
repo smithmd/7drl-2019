@@ -1,19 +1,22 @@
 import * as ROT from 'rot-js';
 
 import { Player } from './player';
-import { Pedro } from './pedro';
-import { Being } from './mixin/being';
+
+import { Being } from '../mixin/being';
+import { Monster } from './monster';
+import { MonsterType, monsterTypes } from '../constants';
 
 export class Game {
     public display: ROT.Display = new ROT.Display();
     public map: Object = {};
     public freeCells = [];
     public player: Player;
-    public pedro: Pedro;
+    public monsters: Array<Monster> = [];
     public engine: ROT.Engine;
-    public ananas: string;
+    public dungeonLevel: number;
 
     constructor() {
+        this.dungeonLevel = 1;
         console.log('started');
         document.body.appendChild(this.display.getContainer() as Node);
         this.generateMap();
@@ -22,12 +25,13 @@ export class Game {
 
         // for some reason this has to be done after drawing the map
         // this.createPlayer();
-        this.player = this.createBeing(Player);
-        this.pedro = this.createBeing(Pedro);
+        this.player = this.createBeing(Player, '@', '#ff0');
+        const monsterDescriptions = monsterTypes.filter(m => (this.dungeonLevel >= m.minDungeon && this.dungeonLevel <= m.maxDungeon));
+        this.monsters = monsterDescriptions.map(m => this.createBeing(Monster, m.character, m.fgColor, m.bgColor));
 
         const scheduler = new ROT.Scheduler.Simple();
         scheduler.add(this.player, true);
-        scheduler.add(this.pedro, true);
+        this.monsters.forEach((m: Monster) => scheduler.add(m, true));
         this.engine = new ROT.Engine(scheduler);
         this.engine.start();
 
@@ -64,23 +68,15 @@ export class Game {
             const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
             const key = this.freeCells.splice(index, 1)[0];
             this.map[key] = '*';
-            if (!i) { this.ananas = key; } // first box contains the ananas
         }
     }
 
-    // public createPlayer() {
-    //     console.log('createPlayer');
-    //     const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
-    //     const key = this.freeCells.splice(index, 1)[0];
-    //     const [x, y] = key.split(',').map((v: string) => +v);
-    //     this.player = new Player(this, x, y);
-    // }
-
-    public createBeing<T>(b: new (game: Game, x: number, y: number) => T): T {
+    private createBeing<T>(b: new (game: Game, x: number, y: number, char: string, fgColor?: string, bgColor?: string) => T, 
+                            char: string, fgColor?: string, bgColor?: string): T {
         console.log('createBeing');
         const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
         const key = this.freeCells.splice(index, 1)[0];
         const [x, y] = key.split(',').map((v: string) => +v);
-        return new b(this, x, y);
+        return new b(this, x, y, char, fgColor, bgColor);
     }
 }

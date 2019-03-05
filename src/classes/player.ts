@@ -1,6 +1,6 @@
 import * as ROT from 'rot-js';
 import { Game } from './game';
-import { Being } from './mixin/being';
+import { Being } from '../mixin/being';
 
 export class Player extends Being {
 
@@ -61,12 +61,8 @@ export class Player extends Being {
         const key = `${this.x},${this.y}`;
         if (this.game.map[key] !== '*') {
             console.log("You're looking at the empty ground. It's just ground.");
-        } else if (key === this.game.ananas) {
-            alert("You found the ananas! You win!");
-            this.game.engine.lock();
-            window.removeEventListener('keydown', this);
         } else {
-            alert("This box is empty.");
+            console.log("This box is empty.");
         }
     }
 }
