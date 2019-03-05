@@ -1,0 +1,23 @@
+{
+  "name": "rotjs-test",
+  "version": "1.0.0",
+  "description": "a test to figure out how to build a rotjs game",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mike Smith",
+  "license": "ISC",
+  "dependencies": {
+    "rot-js": "^2.0.3"
+  },
+  "devDependencies": {
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.3333",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  }
+}
