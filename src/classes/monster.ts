@@ -21,6 +21,7 @@ export class Monster extends Being {
         path.shift(); // remove monsters's position
         if (path.length === 0) {
             // do something because the monster just hit the player
+            console.log('collision with player');
         } else {
             const [x,y] = [path[0][0], path[0][1]];
             this.game.display.draw(this._x, this._y, this.game.map[`${this._x},${this._y}`], null, null);
