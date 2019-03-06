@@ -24,9 +24,9 @@ export class Game {
         this.drawWholeMap();
 
         // for some reason this has to be done after drawing the map
-        this.player = this.createBeing(Player, '@', '#ff0');
+        this.player = this.createBeing(Player, '@', '#ff0', null, 'Player');
         const monsterDescriptions = monsterTypes.filter(m => (this.dungeonLevel >= m.minDungeon && this.dungeonLevel <= m.maxDungeon));
-        this.monsters = monsterDescriptions.map(m => this.createBeing(Monster, m.character, m.fgColor, m.bgColor));
+        this.monsters = monsterDescriptions.map(m => this.createBeing(Monster, m.character, m.fgColor, m.bgColor, m.name));
 
         const scheduler = new ROT.Scheduler.Simple();
         scheduler.add(this.player, true);
@@ -70,12 +70,12 @@ export class Game {
         }
     }
 
-    private createBeing<T>(b: new (game: Game, x: number, y: number, char: string, fgColor?: string, bgColor?: string) => T, 
-                            char: string, fgColor?: string, bgColor?: string): T {
+    private createBeing<T>(b: new (game: Game, x: number, y: number, char: string, fgColor?: string, bgColor?: string, name?: string) => T, 
+                            char: string, fgColor?: string, bgColor?: string, name?: string): T {
         console.log('createBeing');
         const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
         const key = this.freeCells.splice(index, 1)[0];
         const [x, y] = key.split(',').map((v: string) => +v);
-        return new b(this, x, y, char, fgColor, bgColor);
+        return new b(this, x, y, char, fgColor, bgColor, name);
     }
 }

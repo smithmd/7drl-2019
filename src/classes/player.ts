@@ -49,7 +49,7 @@ export class Player extends Being {
             this.draw();
         } else if(canEnter instanceof Monster) {
             // monster in that square
-            console.log('collided with a ' + canEnter.character);
+            console.log('collided with ' + canEnter.name);
         }
         window.removeEventListener('keydown', this);
         this.game.engine.unlock();
@@ -62,19 +62,5 @@ export class Player extends Being {
         } else {
             console.log("This box is empty.");
         }
-    }
-
-    private canEnter(x: number, y: number): Boolean | Monster {
-        const newKey = `${x},${y}`;
-        if (!(newKey in this.game.map)) {
-            return false; 
-        }
-
-        const m: Monster = this.game.monsters.find(monster => monster.x === x && monster.y === y);
-        if (m) {
-            return m;
-        }
-
-        return true;
     }
 }
