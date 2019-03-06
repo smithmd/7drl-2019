@@ -24,7 +24,6 @@ export class Game {
         this.drawWholeMap();
 
         // for some reason this has to be done after drawing the map
-        // this.createPlayer();
         this.player = this.createBeing(Player, '@', '#ff0');
         const monsterDescriptions = monsterTypes.filter(m => (this.dungeonLevel >= m.minDungeon && this.dungeonLevel <= m.maxDungeon));
         this.monsters = monsterDescriptions.map(m => this.createBeing(Monster, m.character, m.fgColor, m.bgColor));

@@ -1,19 +1,12 @@
 import * as ROT from 'rot-js';
 import { Game } from './game';
 import { Being } from '../mixin/being';
+import { Monster } from './monster';
 
 export class Player extends Being {
 
     constructor(protected game: Game, protected _x: number, protected _y: number) {
         super(game, _x, _y, '@', '#ff0');
-    }
-
-    public get x(): number {
-        return this._x;
-    }
-
-    public get y(): number {
-        return this._y;
     }
 
     act(): void {
@@ -45,14 +38,19 @@ export class Player extends Being {
         const newX = this.x + diff[0];
         const newY = this.y + diff[1];
 
-        const newKey = `${newX},${newY}`;
-        if (!(newKey in this.game.map)) { return; }
+        const canEnter = this.canEnter(newX, newY);
 
-        // set the character in this space to what it used to be before the move
-        this.game.display.draw(this.x, this.y, this.game.map[`${this.x},${this.y}`], null, null);
-        this._x = newX;
-        this._y = newY;
-        this.draw();
+        if (canEnter === true) {
+            // set the character in this space to what it used to be before the move
+            this.game.display.draw(this.x, this.y, this.game.map[`${this.x},${this.y}`], null, null);
+
+            this._x = newX;
+            this._y = newY;
+            this.draw();
+        } else if(canEnter instanceof Monster) {
+            // monster in that square
+            console.log('collided with a ' + canEnter.character);
+        }
         window.removeEventListener('keydown', this);
         this.game.engine.unlock();
     }
@@ -64,5 +62,19 @@ export class Player extends Being {
         } else {
             console.log("This box is empty.");
         }
+    }
+
+    private canEnter(x: number, y: number): Boolean | Monster {
+        const newKey = `${x},${y}`;
+        if (!(newKey in this.game.map)) {
+            return false; 
+        }
+
+        const m: Monster = this.game.monsters.find(monster => monster.x === x && monster.y === y);
+        if (m) {
+            return m;
+        }
+
+        return true;
     }
 }
