@@ -15,7 +15,7 @@ export class Game {
     public monsters: Array<Monster> = [];
     public engine: ROT.Engine;
     public dungeonLevel: number;
-    private scheduler: Simple;
+    private scheduler = new ROT.Scheduler.Simple()
 
     constructor() {
         this.dungeonLevel = 1;
@@ -31,8 +31,6 @@ export class Game {
         this.generateStairs();
         this.drawWholeMap();
 
-        this.scheduler = new ROT.Scheduler.Simple();
-
         this.addPlayer();
         this.addMonsters();
 
@@ -42,14 +40,19 @@ export class Game {
 
     private clearDungeon(): void {
         console.log('clear dungeon');
-        this.map = {};
         this.freeCells.length = 0;
+        // remove monsters
         this.monsters.forEach((m:Monster) => {
             this.scheduler.remove(m);
         });
+        this.monsters.length = 0;
+
+        // remove player
         this.scheduler.remove(this.player);
         this.player = null;
-        this.monsters.length = 0;
+
+        // clear map
+        this.map = {};
         this.display.clear();
     }
 

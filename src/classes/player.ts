@@ -63,6 +63,7 @@ export class Player extends Being {
         const player_location = `${this.x},${this.y}`;
         if (this.game.map[player_location] === '>') {
             this.game.descend();
+            window.removeEventListener('keydown', this);
             this.game.engine.unlock();
         } else {
             console.log('no stairs here');
