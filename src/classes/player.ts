@@ -64,6 +64,12 @@ export class Player extends Being {
         if (this.game.map[player_location] === '>') {
             this.game.descend();
             window.removeEventListener('keydown', this);
+            const index = Math.floor(ROT.RNG.getUniform() * this.game.freeCells.length);
+            const key = this.game.freeCells.splice(index, 1)[0];
+            const [newX, newY] = key.split(',').map((v: string) => +v);
+            this._x = newX;
+            this._y = newY;
+            this.draw();
             this.game.engine.unlock();
         } else {
             console.log('no stairs here');

@@ -48,8 +48,8 @@ export class Game {
         this.monsters.length = 0;
 
         // remove player
-        this.scheduler.remove(this.player);
-        this.player = null;
+        // this.scheduler.remove(this.player);
+        // this.player = null;
 
         // clear map
         this.map = {};
@@ -66,7 +66,7 @@ export class Game {
         this.generateStairs();
         this.drawWholeMap();
 
-        this.addPlayer();
+        // this.addPlayer();
         this.addMonsters();
     }
 
