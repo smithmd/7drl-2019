@@ -5,6 +5,7 @@ import { Player } from './player';
 import { Being } from '../mixin/being';
 import { Monster } from './monster';
 import { MonsterType, monsterTypes } from '../constants';
+import Simple from 'rot-js/lib/scheduler/simple';
 
 export class Game {
     public display: ROT.Display = new ROT.Display();
@@ -14,32 +15,68 @@ export class Game {
     public monsters: Array<Monster> = [];
     public engine: ROT.Engine;
     public dungeonLevel: number;
+    private scheduler: Simple;
 
     constructor() {
         this.dungeonLevel = 1;
         console.log('started');
         document.getElementById('gameBody').appendChild(this.display.getContainer() as Node);
-        this.generateMap();
-        this.generateBoxes();
-        this.drawWholeMap();
-
-        // for some reason this has to be done after drawing the map
-        this.player = this.createBeing(Player, '@', '#ff0', null, 'Player');
-        const monsterDescriptions = monsterTypes.filter(m => (this.dungeonLevel >= m.minDungeon && this.dungeonLevel <= m.maxDungeon));
-        this.monsters = monsterDescriptions.map(m => this.createBeing(Monster, m.character, m.fgColor, m.bgColor, m.name));
-
-        const scheduler = new ROT.Scheduler.Simple();
-        scheduler.add(this.player, true);
-        this.monsters.forEach((m: Monster) => scheduler.add(m, true));
-        this.engine = new ROT.Engine(scheduler);
-        this.engine.start();
-
+        this.initializeGame();
         console.log('ended');
     }
 
-    public descend(): void {
-        this.dungeonLevel += 1;
+    private initializeGame(): void {
         this.generateMap();
+        this.generateBoxes();
+        this.generateStairs();
+        this.drawWholeMap();
+
+        this.scheduler = new ROT.Scheduler.Simple();
+
+        this.addPlayer();
+        this.addMonsters();
+
+        this.engine = new ROT.Engine(this.scheduler);
+        this.engine.start();
+    }
+
+    private clearDungeon(): void {
+        console.log('clear dungeon');
+        this.map = {};
+        this.freeCells.length = 0;
+        this.monsters.forEach((m:Monster) => {
+            this.scheduler.remove(m);
+        });
+        this.scheduler.remove(this.player);
+        this.player = null;
+        this.monsters.length = 0;
+        this.display.clear();
+    }
+
+    public descend(): void {
+        console.log('descending ')
+        this.dungeonLevel += 1;
+        this.clearDungeon();
+        
+        this.generateMap();
+        this.generateBoxes();
+        this.generateStairs();
+        this.drawWholeMap();
+
+        this.addPlayer();
+        this.addMonsters();
+    }
+
+    private addPlayer(): void {
+        this.player = this.createBeing(Player, '@', '#ff0', null, 'Player');
+        this.scheduler.add(this.player, true);
+    }
+
+    private addMonsters(): void {
+        const monsterDescriptions = monsterTypes.filter(m => (this.dungeonLevel >= m.minDungeon && this.dungeonLevel <= m.maxDungeon));
+        this.monsters = monsterDescriptions.map(m => this.createBeing(Monster, m.character, m.fgColor, m.bgColor, m.name));
+
+        this.monsters.forEach((m: Monster) => this.scheduler.add(m, true));
     }
 
     private generateMap(): void {
@@ -52,7 +89,6 @@ export class Game {
             this.freeCells.push(key);
             this.map[key] = '.';
         });
-
     }
 
     private drawWholeMap(): void {
@@ -73,6 +109,13 @@ export class Game {
             const key = this.freeCells.splice(index, 1)[0];
             this.map[key] = '*';
         }
+    }
+
+    private generateStairs(): void {
+        console.log('generate stairs');
+        const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
+        const key = this.freeCells.splice(index,1)[0];
+        this.map[key] = '>';
     }
 
     private createBeing<T>(b: new (game: Game, x: number, y: number, char: string, fgColor?: string, bgColor?: string, name?: string) => T, 

@@ -32,6 +32,10 @@ export class Player extends Being {
             this.checkBox();
         }
 
+        if (code === ROT.KEYS.VK_GREATER_THAN || code === ROT.KEYS.VK_PERIOD) {
+            this.checkForStairs();
+        }
+
         if (!(code in keyMap)) { return; }
 
         const diff = ROT.DIRS[8][keyMap[code]];
@@ -53,6 +57,16 @@ export class Player extends Being {
         }
         window.removeEventListener('keydown', this);
         this.game.engine.unlock();
+    }
+
+    checkForStairs(): void {
+        const player_location = `${this.x},${this.y}`;
+        // if (this.game.map[player_location] === '>') {
+            this.game.descend();
+            this.game.engine.unlock();
+        // } else {
+        //     console.log('no stairs here');
+        // }
     }
 
     checkBox(): void {

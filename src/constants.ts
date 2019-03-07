@@ -17,10 +17,10 @@ export class MonsterType {
 }
 
 export const monsterTypes = [
-    new MonsterType(1,2,'Bat','~','#f00',null),
+    new MonsterType(1,1,'Bat','~','#f00',null),
     new MonsterType(2,3,'Minotaur','M','#f00',null),
     new MonsterType(2,3,'Wizard','W','#f00',null),
-    new MonsterType(1,2,'Snake','s','#f00',null),
-    new MonsterType(1,3,'Rat','r','#f00',null),
+    new MonsterType(1,1,'Snake','s','#f00',null),
+    new MonsterType(1,2,'Rat','r','#f00',null),
     new MonsterType(2,3,'Wyvern','y','#f00',null),
-]
+];
