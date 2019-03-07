@@ -18,7 +18,7 @@ export class Game {
     constructor() {
         this.dungeonLevel = 1;
         console.log('started');
-        document.body.appendChild(this.display.getContainer() as Node);
+        document.getElementById('gameBody').appendChild(this.display.getContainer() as Node);
         this.generateMap();
         this.generateBoxes();
         this.drawWholeMap();
@@ -37,8 +37,13 @@ export class Game {
         console.log('ended');
     }
 
+    public descend(): void {
+        this.dungeonLevel += 1;
+        this.generateMap();
+    }
+
     private generateMap(): void {
-        console.log('generateMap');
+        console.log('generateMap, level ', this.dungeonLevel);
         const digger = new ROT.Map.Digger(80, 25);
 
         digger.create((x: number, y: number, value) => {
