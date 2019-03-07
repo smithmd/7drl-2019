@@ -84,7 +84,7 @@ export class Game {
 
     private generateMap(): void {
         console.log('generateMap, level ', this.dungeonLevel);
-        const digger = new ROT.Map.Digger(80, 25);
+        const digger = new ROT.Map.Rogue(80, 25, null);
 
         digger.create((x: number, y: number, value) => {
             if (value) { return; } /* do not store walls */
