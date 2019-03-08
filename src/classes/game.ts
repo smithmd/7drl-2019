@@ -6,6 +6,7 @@ import { Being } from '../mixin/being';
 import { Monster } from './monster';
 import { MonsterType, monsterTypes, maxDungeonLevel } from '../constants';
 import Simple from 'rot-js/lib/scheduler/simple';
+import { UI } from './ui';
 
 export class Game {
     public display: ROT.Display = new ROT.Display();
@@ -15,12 +16,14 @@ export class Game {
     public monsters: Array<Monster> = [];
     public engine: ROT.Engine;
     public dungeonLevel: number;
+    public ui: UI;
     private scheduler = new ROT.Scheduler.Simple()
 
     constructor() {
         this.dungeonLevel = 1;
         console.log('started');
         document.getElementById('gameBody').appendChild(this.display.getContainer() as Node);
+        this.ui = new UI();
         this.initializeGame();
         console.log('ended');
     }

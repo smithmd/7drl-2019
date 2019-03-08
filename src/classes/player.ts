@@ -59,8 +59,7 @@ export class Player extends Being implements Killable {
             this.draw();
         } else if(canEnter instanceof Monster) {
             // monster in that square
-            console.log('collided with ' + canEnter.name);
-            canEnter.takeHit();
+            canEnter.takeHit('Player');
         }
         window.removeEventListener('keydown', this);
         this.game.engine.unlock();
@@ -78,26 +77,26 @@ export class Player extends Being implements Killable {
             this.draw();
             this.game.engine.unlock();
         } else {
-            console.log('no stairs here');
+            this.game.ui.updateGameLog('There are no stairs here.');
         }
     }
 
     checkBox(): void {
         const key = `${this.x},${this.y}`;
         if (this.game.map[key] !== '*') {
-            console.log("You're looking at the empty ground. It's just ground.");
+            this.game.ui.updateGameLog("You're looking at the empty ground. It's just ground.");
         } else {
-            console.log("This box is empty.");
+            this.game.ui.updateGameLog("This box is empty.");
         }
     }
 
     public die(): void {
-        console.log('You died.');
+        this.game.ui.updateGameLog('You died.\nGAME OVER');
         this.game.engine.lock();
     }
 
     public takeHit(attacker: string): void {
-        console.log('You were hit by', attacker);
+        this.game.ui.updateGameLog('You were hit by' + attacker);
         this.die();
     }
 }

@@ -39,11 +39,12 @@ export class Monster extends Being implements Killable {
     }
 
     public die(): void {
-        console.log(this.name, 'died.');
+        this.game.ui.updateGameLog(this.name + ' died.');
         this.game.removeMonster(this);
     }
 
-    public takeHit(): void {
+    public takeHit(attackerName: string): void {
+        this.game.ui.updateGameLog(attackerName + ' hit ' + this.name);
         this.die();
     }
 }
