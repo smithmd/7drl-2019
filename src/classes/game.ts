@@ -4,7 +4,7 @@ import { Player } from './player';
 
 import { Being } from '../mixin/being';
 import { Monster } from './monster';
-import { MonsterType, monsterTypes } from '../constants';
+import { MonsterType, monsterTypes, maxDungeonLevel } from '../constants';
 import Simple from 'rot-js/lib/scheduler/simple';
 
 export class Game {
@@ -63,7 +63,9 @@ export class Game {
         
         this.generateMap();
         this.generateBoxes();
-        this.generateStairs();
+        if (this.dungeonLevel < maxDungeonLevel) {
+            this.generateStairs();
+        }
         this.drawWholeMap();
 
         // this.addPlayer();
@@ -108,16 +110,18 @@ export class Game {
     private generateBoxes(): void {
         console.log('generateBoxes');
         for (let i = 0; i < 10; i++) {
-            const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
-            const key = this.freeCells.splice(index, 1)[0];
+            const key = this.getEmptyCellKey();
             this.map[key] = '*';
         }
     }
 
+    private generateMacGuffin(): void{
+        this.map[this.getEmptyCellKey()] = 'o';
+    }
+
     private generateStairs(): void {
         console.log('generate stairs');
-        const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
-        const key = this.freeCells.splice(index,1)[0];
+        const key = this.getEmptyCellKey();
         this.map[key] = '>';
     }
 
@@ -128,5 +132,17 @@ export class Game {
         const key = this.freeCells.splice(index, 1)[0];
         const [x, y] = key.split(',').map((v: string) => +v);
         return new b(this, x, y, char, fgColor, bgColor, name);
+    }
+
+    public getEmptyCellKey(): string {
+        const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
+        return this.freeCells.splice(index,1)[0];
+    }
+
+    public removeMonster(m: Monster) {
+        this.scheduler.remove(m);
+        const index = this.monsters.indexOf(m);
+        this.display.draw(m.x, m.y, this.map[`${m.x},${m.y}`], null, null);
+        this.monsters.splice(index,1);
     }
 }

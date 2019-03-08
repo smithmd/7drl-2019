@@ -2,8 +2,9 @@ import * as ROT from 'rot-js';
 import { Game } from './game';
 import { Being } from '../mixin/being';
 import { Monster } from './monster';
+import { Killable } from '../interfaces/killable';
 
-export class Player extends Being {
+export class Player extends Being implements Killable {
 
     constructor(protected game: Game, protected _x: number, protected _y: number) {
         super(game, _x, _y, '@', '#ff0');
@@ -36,6 +37,11 @@ export class Player extends Being {
             this.checkForStairs();
         }
 
+        if (code === ROT.KEYS.VK_S) {
+            window.removeEventListener('keydown', this);
+            this.game.engine.unlock();
+        }
+
         if (!(code in keyMap)) { return; }
 
         const diff = ROT.DIRS[8][keyMap[code]];
@@ -54,6 +60,7 @@ export class Player extends Being {
         } else if(canEnter instanceof Monster) {
             // monster in that square
             console.log('collided with ' + canEnter.name);
+            canEnter.takeHit();
         }
         window.removeEventListener('keydown', this);
         this.game.engine.unlock();
@@ -64,8 +71,7 @@ export class Player extends Being {
         if (this.game.map[player_location] === '>') {
             this.game.descend();
             window.removeEventListener('keydown', this);
-            const index = Math.floor(ROT.RNG.getUniform() * this.game.freeCells.length);
-            const key = this.game.freeCells.splice(index, 1)[0];
+            const key = this.game.getEmptyCellKey();
             const [newX, newY] = key.split(',').map((v: string) => +v);
             this._x = newX;
             this._y = newY;
@@ -83,5 +89,15 @@ export class Player extends Being {
         } else {
             console.log("This box is empty.");
         }
+    }
+
+    public die(): void {
+        console.log('You died.');
+        this.game.engine.lock();
+    }
+
+    public takeHit(attacker: string): void {
+        console.log('You were hit by', attacker);
+        this.die();
     }
 }

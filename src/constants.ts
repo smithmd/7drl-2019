@@ -24,3 +24,5 @@ export const monsterTypes = [
     new MonsterType(1,2,'Rat','r','#f00',null),
     new MonsterType(2,3,'Wyvern','y','#f00',null),
 ];
+
+export const maxDungeonLevel: number = 4;
