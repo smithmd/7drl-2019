@@ -4,9 +4,10 @@ import { Player } from './player';
 
 import { Being } from '../mixin/being';
 import { Monster } from './monster';
-import { MonsterType, monsterTypes, maxDungeonLevel } from '../constants';
+import { monsterTypes, maxDungeonLevel } from '../constants';
 import Simple from 'rot-js/lib/scheduler/simple';
 import { UI } from './ui';
+import { MonsterType } from './monsterType';
 
 export class Game {
     public display: ROT.Display = new ROT.Display();
@@ -31,8 +32,8 @@ export class Game {
     private initializeGame(): void {
         this.generateMap();
         this.generateBoxes();
-        this.generateStairs();
         this.drawWholeMap();
+        this.generateStairs();
 
         this.addPlayer();
         this.addMonsters();
@@ -66,10 +67,10 @@ export class Game {
         
         this.generateMap();
         this.generateBoxes();
+        this.drawWholeMap();
         if (this.dungeonLevel < maxDungeonLevel) {
             this.generateStairs();
         }
-        this.drawWholeMap();
 
         // this.addPlayer();
         this.addMonsters();
@@ -77,12 +78,20 @@ export class Game {
 
     private addPlayer(): void {
         this.player = this.createBeing(Player, '@', '#ff0', null, 'Player');
+        this.ui.updatePlayerStats(this.player);
         this.scheduler.add(this.player, true);
     }
 
     private addMonsters(): void {
         const monsterDescriptions = monsterTypes.filter(m => (this.dungeonLevel >= m.minDungeon && this.dungeonLevel <= m.maxDungeon));
-        this.monsters = monsterDescriptions.map(m => this.createBeing(Monster, m.character, m.fgColor, m.bgColor, m.name));
+        this.monsters = monsterDescriptions.map(m => {
+            const being: Monster = this.createBeing(Monster, m.character, m.fgColor, m.bgColor, m.name);
+            being.armor = m.armor;
+            being.strength = m.strength;
+            being.maxHP = m.hitPoints;
+            being.hitPoints = m.hitPoints;
+            return being;
+        });
 
         this.monsters.forEach((m: Monster) => this.scheduler.add(m, true));
     }
@@ -118,14 +127,17 @@ export class Game {
         }
     }
 
-    private generateMacGuffin(): void{
+    private generateMacGuffin(): void {
         this.map[this.getEmptyCellKey()] = 'o';
     }
 
     private generateStairs(): void {
+        const stairChar = '>';
         console.log('generate stairs');
         const key = this.getEmptyCellKey();
-        this.map[key] = '>';
+        this.map[key] = stairChar;
+        const [x, y] = key.split(',').map(v => +v);
+        this.display.draw(x,y,stairChar, '#f0f',null);
     }
 
     private createBeing<T>(b: new (game: Game, x: number, y: number, char: string, fgColor?: string, bgColor?: string, name?: string) => T, 

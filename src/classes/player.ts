@@ -3,8 +3,15 @@ import { Game } from './game';
 import { Being } from '../mixin/being';
 import { Monster } from './monster';
 import { Killable } from '../interfaces/killable';
+import { Stats } from '../interfaces/stats';
 
-export class Player extends Being implements Killable {
+export class Player extends Being implements Killable, Stats {
+    hitPoints: number = 5;
+    maxHP: number = 5;
+    armor: number = 0;
+    strength: number = 1;
+
+    name = 'Player';
 
     constructor(protected game: Game, protected _x: number, protected _y: number) {
         super(game, _x, _y, '@', '#ff0');
@@ -59,7 +66,7 @@ export class Player extends Being implements Killable {
             this.draw();
         } else if(canEnter instanceof Monster) {
             // monster in that square
-            canEnter.takeHit('Player');
+            canEnter.takeHit(this);
         }
         window.removeEventListener('keydown', this);
         this.game.engine.unlock();
@@ -95,8 +102,13 @@ export class Player extends Being implements Killable {
         this.game.engine.lock();
     }
 
-    public takeHit(attacker: string): void {
-        this.game.ui.updateGameLog('You were hit by' + attacker);
-        this.die();
+    public takeHit(attacker: Monster | Player): void {
+        const dmg = attacker.strength - this.armor;
+        this.hitPoints -= (dmg > 0 ? dmg : 0); // prevent accidental healing
+        this.game.ui.updatePlayerStats(this);
+        this.game.ui.updateGameLog('You were hit by ' + attacker.name + ' for ' + dmg + ' damage.');
+        if (this.hitPoints <= 0) {
+            this.die();
+        }
     }
 }
