@@ -3,7 +3,7 @@ import { Player } from "./player";
 export class UI {
     updateGameLog(logText: string): void {
         const log: HTMLDivElement = <HTMLDivElement>document.getElementById('gameLog');
-        log.innerHTML = new Date().toTimeString().split(' ')[0] + ' ' + logText + '<br />' + log.innerHTML;
+        log.innerHTML = new Date().toTimeString().split(' ')[0] + ' ' + logText + '\n' + log.innerHTML;
         log.scrollTop = 0;
     }
 

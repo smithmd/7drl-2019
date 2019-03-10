@@ -99,14 +99,14 @@ export class Player extends Being implements Killable, Stats {
             if (item) {
                 let logText = 'You found ' + item.name + '!';
 
-                logText += (item.healthIncrease > 0 ? '\n\tHealth +1' : '');
+                logText += (item.healthIncrease > 0 ? ' Health +1' : '');
                 this.maxHP += item.healthIncrease;
                 this.hitPoints += item.healthIncrease;
 
-                logText += (item.armorIncrease > 0 ? '\n\tArmor +1' : '');
+                logText += (item.armorIncrease > 0 ? ' Armor +1' : '');
                 this.armor += item.armorIncrease;
                 
-                logText += (item.strengthIncrease > 0 ? '\n\tStrength +1' : '');
+                logText += (item.strengthIncrease > 0 ? ' Strength +1' : '');
                 this.strength += item.strengthIncrease;
 
                 this.game.ui.updateGameLog(logText);
