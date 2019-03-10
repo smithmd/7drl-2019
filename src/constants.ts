@@ -16,9 +16,9 @@ export const monsterTypes = [
     new MonsterType(1,1,'Snake','s',1,1,0,'#f00'),
     new MonsterType(1,2,'Rat','r',1,2,0,'#f00'),
     new MonsterType(1,2,'Rat','r',1,2,0,'#f00'),
-    new MonsterType(2,3,'Wyvern','Y',2,2,1,'#f00'),
-    new MonsterType(2,3,'Wyvern','Y',2,2,1,'#f00'),
-    new MonsterType(3,4,'Steel Wyvern','Y',4,4,2,'#0ff'),
+    new MonsterType(2,3,'Wyvern','Y',3,2,1,'#f00'),
+    new MonsterType(3,3,'Wyvern','Y',4,2,1,'#f00'),
+    new MonsterType(3,4,'Steel Wyvern','Y',4,5,2,'#0ff'),
 ];
 
 export const items = [

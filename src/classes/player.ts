@@ -65,12 +65,16 @@ export class Player extends Being implements Killable, Stats {
             this._x = newX;
             this._y = newY;
             this.draw();
+            window.removeEventListener('keydown', this);
+            this.game.engine.unlock();
         } else if(canEnter instanceof Monster) {
             // monster in that square
             canEnter.takeHit(this);
+            window.removeEventListener('keydown', this);
+            this.game.engine.unlock();
+        } else {
+            this.game.ui.updateGameLog('You bumped into the wall.');
         }
-        window.removeEventListener('keydown', this);
-        this.game.engine.unlock();
     }
 
     checkForStairs(): void {
@@ -123,6 +127,7 @@ export class Player extends Being implements Killable, Stats {
             } else if (this.game.dungeonLevel === 4 && key === this.game.macGuffinKey) {
                 this.game.ui.updateGameLog('You found the disgusting ring! Congratulations! You win the game!');
                 this.game.ui.updateCompletion(true);
+                window.removeEventListener('keydown', this);
                 this.game.engine.lock();
             } else {
                 this.game.ui.updateGameLog('This chest is empty.');
@@ -134,6 +139,7 @@ export class Player extends Being implements Killable, Stats {
     public die(): void {
         this.game.ui.updateGameLog('You died.\nGAME OVER');
         this.game.ui.updateCompletion(false);
+        window.removeEventListener('keydown', this);
         this.game.engine.lock();
     }
 
