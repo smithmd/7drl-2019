@@ -109,7 +109,7 @@ export class Player extends Being implements Killable, Stats {
 
                 this.game.ui.updateGameLog(logText);
                 this.game.ui.updatePlayerStats(this);
-            } if (this.game.dungeonLevel === 4 && key === this.game.macGuffinKey) {
+            } else if (this.game.dungeonLevel === 4 && key === this.game.macGuffinKey) {
                 this.game.ui.updateGameLog('You found the disgusting ring! Congratulations! You win the game!');
                 this.game.ui.updateCompletion(true);
                 this.game.engine.lock();
