@@ -31,11 +31,10 @@ export class Monster extends Being implements Killable, Stats {
         const [x,y] = [path[0][0], path[0][1]];
         const being = this.canEnter(x, y);
         if (being instanceof Player) {
-            // do something because the monster just hit the player
-            console.log('collision with player');
+            // console.log('collision with player');
             being.takeHit(this);
         } else if (being instanceof Monster) {
-            console.log(this.name + ' collided with ' + being.name);
+            // console.log(this.name + ' collided with ' + being.name);
         } else {
             this.game.display.draw(this._x, this._y, this.game.map[`${this._x},${this._y}`], null, null);
             [this._x, this._y] = [x, y];

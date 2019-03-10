@@ -4,6 +4,7 @@ export class UI {
     updateGameLog(logText: string): void {
         const log: HTMLDivElement = <HTMLDivElement>document.getElementById('gameLog');
         log.innerHTML = new Date().toTimeString().split(' ')[0] + ' ' + logText + '<br />' + log.innerHTML;
+        log.scrollTop = 0;
     }
 
     updatePlayerStats(player: Player) {
