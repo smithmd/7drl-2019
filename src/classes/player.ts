@@ -90,10 +90,12 @@ export class Player extends Being implements Killable, Stats {
 
     checkBox(): void {
         const key = `${this.x},${this.y}`;
-        if (this.game.map[key] !== '*' && this.game.map[key] !== '>') {
+        if (this.game.map[key] === '.') {
             this.game.ui.updateGameLog("You're looking at the empty ground. It's just ground.");
         } else if (this.game.map[key] === '>') {
             this.game.ui.updateGameLog('There are stairs here descending into the darkness.');
+        } else if (this.game.map[key] === 'o') {
+            this.game.ui.updateGameLog('There is an empty chest here. You\'ve already searched this one.');
         } else if (this.game.map[key] === '*') {
             const item = this.game.getItem(key);
             if (item) {
@@ -116,7 +118,7 @@ export class Player extends Being implements Killable, Stats {
                 this.game.ui.updateCompletion(true);
                 this.game.engine.lock();
             } else {
-                this.game.ui.updateGameLog('This box is empty.');
+                this.game.ui.updateGameLog('This chest is empty.');
             }
             this.game.map[key] = 'o';
         }

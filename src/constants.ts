@@ -2,7 +2,6 @@ import { MonsterType } from "./classes/monsterType";
 import { Item } from "./classes/item";
 
 export const monsterTypes = [
-    // hp, str, armor
     new MonsterType(1,1,'Bat','~',1,2,0,'#f00'),
     new MonsterType(1,1,'Bat','~',1,1,0,'#f00'),
     new MonsterType(2,3,'Manbat','B',3,3,0,'#f00'),

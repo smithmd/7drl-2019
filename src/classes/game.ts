@@ -1,13 +1,9 @@
 import * as ROT from 'rot-js';
 
 import { Player } from './player';
-
-import { Being } from '../mixin/being';
 import { Monster } from './monster';
 import { monsterTypes, maxDungeonLevel, items } from '../constants';
-import Simple from 'rot-js/lib/scheduler/simple';
 import { UI } from './ui';
-import { MonsterType } from './monsterType';
 import { Item } from './item';
 
 export class Game {
@@ -19,7 +15,7 @@ export class Game {
     public engine: ROT.Engine;
     public dungeonLevel: number;
     public ui: UI;
-    private scheduler = new ROT.Scheduler.Simple()
+    private scheduler = new ROT.Scheduler.Simple();
     private itemKeys: Array<string> = [];
     public macGuffinKey: string;
 
@@ -63,7 +59,7 @@ export class Game {
     }
 
     public descend(): void {
-        console.log('descending ')
+        console.log('descending');
         this.dungeonLevel += 1;
         this.clearDungeon();
         
