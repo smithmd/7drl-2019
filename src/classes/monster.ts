@@ -21,7 +21,7 @@ export class Monster extends Being implements Killable, Stats {
         const astar = new ROT.Path.AStar(p_x, p_y, 
                                         (x,y) => `${x},${y}` in this.game.map,
                                         {topology: 8});
-        
+
         const path = [];
         astar.compute(this._x, 
                       this._y, 

@@ -4,10 +4,11 @@ import { Player } from './player';
 
 import { Being } from '../mixin/being';
 import { Monster } from './monster';
-import { monsterTypes, maxDungeonLevel } from '../constants';
+import { monsterTypes, maxDungeonLevel, items } from '../constants';
 import Simple from 'rot-js/lib/scheduler/simple';
 import { UI } from './ui';
 import { MonsterType } from './monsterType';
+import { Item } from './item';
 
 export class Game {
     public display: ROT.Display = new ROT.Display();
@@ -19,6 +20,7 @@ export class Game {
     public dungeonLevel: number;
     public ui: UI;
     private scheduler = new ROT.Scheduler.Simple()
+    private itemKeys: Array<string> = [];
 
     constructor() {
         this.dungeonLevel = 1;
@@ -33,6 +35,7 @@ export class Game {
         this.generateMap();
         this.generateBoxes();
         this.drawWholeMap();
+
         this.generateStairs();
 
         this.addPlayer();
@@ -55,6 +58,8 @@ export class Game {
         // this.scheduler.remove(this.player);
         // this.player = null;
 
+        this.itemKeys.length = 0;
+
         // clear map
         this.map = {};
         this.display.clear();
@@ -70,10 +75,14 @@ export class Game {
         this.drawWholeMap();
         if (this.dungeonLevel < maxDungeonLevel) {
             this.generateStairs();
+        } else {
+            this.generateMacGuffin();
         }
 
         // this.addPlayer();
         this.addMonsters();
+
+        this.ui.updateGameLog('Descending to level ' + this.dungeonLevel);
     }
 
     private addPlayer(): void {
@@ -124,6 +133,9 @@ export class Game {
         for (let i = 0; i < 10; i++) {
             const key = this.getEmptyCellKey();
             this.map[key] = '*';
+            if (items[i]) {
+                this.itemKeys.push(key);
+            }
         }
     }
 
@@ -147,6 +159,21 @@ export class Game {
         const key = this.freeCells.splice(index, 1)[0];
         const [x, y] = key.split(',').map((v: string) => +v);
         return new b(this, x, y, char, fgColor, bgColor, name);
+    }
+
+    public getItem(key: string): Item | null {
+        const index = this.itemKeys.indexOf(key);
+        if(index > -1) {
+            this.itemKeys[index] = null;
+            if (this.itemKeys.reduce((count, item) => {
+                return (item ? count + 1 : count);
+            }, 0) === 0) {
+                this.ui.updateGameLog('You found everything on this floor.');
+            }
+            return items[index];
+        }
+
+        return null;
     }
 
     public getEmptyCellKey(): string {

@@ -1,6 +1,7 @@
 #gameLog {
     width: 790px;
     height: 300px;
+    overflow-y: scroll;
 }
 #playerStats, #gameBody {
     float: left;

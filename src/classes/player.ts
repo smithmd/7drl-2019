@@ -93,7 +93,25 @@ export class Player extends Being implements Killable, Stats {
         if (this.game.map[key] !== '*') {
             this.game.ui.updateGameLog("You're looking at the empty ground. It's just ground.");
         } else {
-            this.game.ui.updateGameLog("This box is empty.");
+            const item = this.game.getItem(key);
+            if (item) {
+                let logText = 'You found an item! Stats increased.';
+
+                logText += (item.healthIncrease > 0 ? '\n\tHealth +1' : '');
+                this.maxHP += item.healthIncrease;
+                this.hitPoints += item.healthIncrease;
+
+                logText += (item.armorIncrease > 0 ? '\n\tArmor +1' : '');
+                this.armor += item.armorIncrease;
+                
+                logText += (item.strengthIncrease > 0 ? '\n\tStrength +1' : '');
+                this.strength += item.strengthIncrease;
+
+                this.game.ui.updateGameLog(logText);
+                this.game.ui.updatePlayerStats(this);
+            } else {
+                this.game.ui.updateGameLog("This box is empty.");
+            }
         }
     }
 
@@ -103,8 +121,8 @@ export class Player extends Being implements Killable, Stats {
     }
 
     public takeHit(attacker: Monster | Player): void {
-        const dmg = attacker.strength - this.armor;
-        this.hitPoints -= (dmg > 0 ? dmg : 0); // prevent accidental healing
+        const dmg = (attacker.strength - this.armor > 0 ? attacker.strength - this.armor : 0);  // prevent accidental healing
+        this.hitPoints -= dmg;
         this.game.ui.updatePlayerStats(this);
         this.game.ui.updateGameLog('You were hit by ' + attacker.name + ' for ' + dmg + ' damage.');
         if (this.hitPoints <= 0) {
