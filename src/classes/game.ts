@@ -21,6 +21,7 @@ export class Game {
     public ui: UI;
     private scheduler = new ROT.Scheduler.Simple()
     private itemKeys: Array<string> = [];
+    public macGuffinKey: string;
 
     constructor() {
         this.dungeonLevel = 1;
@@ -54,10 +55,6 @@ export class Game {
         });
         this.monsters.length = 0;
 
-        // remove player
-        // this.scheduler.remove(this.player);
-        // this.player = null;
-
         this.itemKeys.length = 0;
 
         // clear map
@@ -75,8 +72,6 @@ export class Game {
         this.drawWholeMap();
         if (this.dungeonLevel < maxDungeonLevel) {
             this.generateStairs();
-        } else {
-            this.generateMacGuffin();
         }
 
         // this.addPlayer();
@@ -120,10 +115,7 @@ export class Game {
     private drawWholeMap(): void {
         console.log('drawWholeMap');
         for (const key in this.map) {
-            const [x, y] = (() => {
-                const [x, y] = key.split(',');
-                return [+x, +y];
-            })();
+            const [x, y] = key.split(',').map(v => +v);
             this.display.draw(x, y, this.map[key], null, null);
         }
     }
@@ -133,14 +125,12 @@ export class Game {
         for (let i = 0; i < 10; i++) {
             const key = this.getEmptyCellKey();
             this.map[key] = '*';
-            if (items[i]) {
+            if (this.dungeonLevel < 4 && items[i]) {
                 this.itemKeys.push(key);
+            } else if (this.dungeonLevel === 4 && i === 0) {
+                this.macGuffinKey = key;
             }
         }
-    }
-
-    private generateMacGuffin(): void {
-        this.map[this.getEmptyCellKey()] = 'o';
     }
 
     private generateStairs(): void {

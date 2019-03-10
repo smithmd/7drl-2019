@@ -28,7 +28,6 @@ export class Monster extends Being implements Killable, Stats {
                       (x,y) => path.push([x,y]));
 
         path.shift(); // remove monsters's position
-        // console.log(this._char + ': ' + path.length);
         const [x,y] = [path[0][0], path[0][1]];
         const being = this.canEnter(x, y);
         if (being instanceof Player) {

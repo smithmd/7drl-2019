@@ -2,11 +2,19 @@
     width: 790px;
     height: 300px;
     overflow-y: scroll;
+    clear:both;
 }
+
 #playerStats, #gameBody {
     float: left;
 }
 
 #playerStats {
     margin-left: 20px;
+}
+
+#gameCompletionStatus {
+    margin-top: 1em;
+    font-size: 2em;
+    color: #f00;
 }

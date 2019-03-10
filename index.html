@@ -9,9 +9,25 @@
         <div id='gameBody'></div>
         <div id='playerStats'>
             <h4>Player Stats</h4>
-            Health: <span id="playerHP"></span> / <span id="playerMaxHP"></span><br />
-            Strength: <span id="playerStrength"></span><br />
-            Armor: <span id="playerArmor"></span><br />
+            <div>
+                Health: <span id="playerHP"></span> / <span id="playerMaxHP"></span><br />
+                Strength: <span id="playerStrength"></span><br />
+                Armor: <span id="playerArmor"></span><br />
+            </div>
+            <div id='gameCompletionStatus'></div>
+            <div id='instructions'>
+                <h4>Instructions</h4>
+                Keys surrounding the 's' key are used for the eight directions of movement.<br />
+                's' key is used to wait one turn.<br />
+                Open chests with space or enter.<br />
+                Descend stairs with '.' or '&gt;'<br />
+                <br />
+                <h4>Legend</h4>
+                &gt; - stairs down<br />
+                * - chest<br />
+                @ - Player<br />
+                other moving things are monsters
+            </div>
         </div>
         <div id='gameLog'></div>
     </body>

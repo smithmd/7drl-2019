@@ -12,4 +12,13 @@ export class UI {
         document.getElementById('playerStrength').innerText = player.strength + '';
         document.getElementById('playerArmor').innerText = player.armor + '';
     }
+
+    updateCompletion(win:boolean) {
+        const completion = document.getElementById('gameCompletionStatus');
+        if (win) {
+            completion.innerText = 'Congratulations! You Win!';
+        } else {
+            completion.innerText = 'You Died.';
+        }
+    }
 }
