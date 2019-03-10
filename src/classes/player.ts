@@ -59,7 +59,8 @@ export class Player extends Being implements Killable, Stats {
 
         if (canEnter === true) {
             // set the character in this space to what it used to be before the move
-            this.game.display.draw(this.x, this.y, this.game.map[`${this.x},${this.y}`], null, null);
+            const fgColor = this.game.map[`${this.x},${this.y}`] === '>' ? '#f0f' : null;
+            this.game.display.draw(this.x, this.y, this.game.map[`${this.x},${this.y}`], fgColor, null);
 
             this._x = newX;
             this._y = newY;
@@ -103,7 +104,13 @@ export class Player extends Being implements Killable, Stats {
 
                 logText += (item.healthIncrease > 0 ? ' Health +1' : '');
                 this.maxHP += item.healthIncrease;
-                this.hitPoints += item.healthIncrease;
+                if (item.name !== 'Gem of Power') {
+                    const hp = this.hitPoints + (item.healthIncrease * 3);
+                    this.hitPoints = hp > this.maxHP ? this.maxHP : hp;
+                } else {
+                    const hp = this.hitPoints + item.healthIncrease;
+                    this.hitPoints = hp > this.maxHP ? this.maxHP : hp;
+                }
 
                 logText += (item.armorIncrease > 0 ? ' Armor +1' : '');
                 this.armor += item.armorIncrease;

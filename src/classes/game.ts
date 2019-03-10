@@ -122,7 +122,11 @@ export class Game {
             const key = this.getEmptyCellKey();
             this.map[key] = '*';
             if (this.dungeonLevel < 4 && items[i]) {
-                this.itemKeys.push(key);
+                if(this.dungeonLevel < 3 && i < 3) {
+                    this.itemKeys.push(key);
+                } else if(this.dungeonLevel > 2) {
+                    this.itemKeys.push(key);
+                }
             } else if (this.dungeonLevel === 4 && i === 0) {
                 this.macGuffinKey = key;
             }
@@ -142,7 +146,7 @@ export class Game {
                             char: string, fgColor?: string, bgColor?: string, name?: string): T {
         console.log('createBeing');
         const index = Math.floor(ROT.RNG.getUniform() * this.freeCells.length);
-        const key = this.freeCells.splice(index, 1)[0];
+        const key: string = this.freeCells.splice(index, 1)[0];
         const [x, y] = key.split(',').map((v: string) => +v);
         return new b(this, x, y, char, fgColor, bgColor, name);
     }
@@ -151,9 +155,7 @@ export class Game {
         const index = this.itemKeys.indexOf(key);
         if(index > -1) {
             this.itemKeys[index] = null;
-            if (this.itemKeys.reduce((count, item) => {
-                return (item ? count + 1 : count);
-            }, 0) === 0) {
+            if (this.itemKeys.reduce((count, item) => item ? count + 1 : count, 0) === 0) {
                 this.ui.updateGameLog('You found everything on this floor.');
             }
             return items[index];
@@ -170,7 +172,8 @@ export class Game {
     public removeMonster(m: Monster) {
         this.scheduler.remove(m);
         const index = this.monsters.indexOf(m);
-        this.display.draw(m.x, m.y, this.map[`${m.x},${m.y}`], null, null);
+        const fgColor = this.map[`${m.x},${m.y}`] === '>' ? '#f0f' : null;
+        this.display.draw(m.x, m.y, this.map[`${m.x},${m.y}`], fgColor, null);
         this.monsters.splice(index,1);
     }
 }

@@ -18,12 +18,12 @@ export class Monster extends Being implements Killable, Stats {
 
     act() {
         const [p_x, p_y] = [this.game.player.x, this.game.player.y];
-        const astar = new ROT.Path.AStar(p_x, p_y, 
+        const aStar = new ROT.Path.AStar(p_x, p_y,
                                         (x,y) => `${x},${y}` in this.game.map,
                                         {topology: 8});
 
         const path = [];
-        astar.compute(this._x, 
+        aStar.compute(this._x,
                       this._y, 
                       (x,y) => path.push([x,y]));
 
@@ -36,7 +36,8 @@ export class Monster extends Being implements Killable, Stats {
         } else if (being instanceof Monster) {
             // console.log(this.name + ' collided with ' + being.name);
         } else {
-            this.game.display.draw(this._x, this._y, this.game.map[`${this._x},${this._y}`], null, null);
+            const fgColor = this.game.map[`${this.x},${this.y}`] === '>' ? '#f0f' : null;
+            this.game.display.draw(this.x, this.y, this.game.map[`${this.x},${this.y}`], fgColor, null);
             [this._x, this._y] = [x, y];
             this.draw();
         }
